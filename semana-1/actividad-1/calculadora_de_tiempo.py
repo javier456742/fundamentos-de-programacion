@@ -1,4 +1,4 @@
-#actividad 1
+#actividad 1 calculadora
 name = input("Hola, Cual es tu nombre?")
 act1 = float(input("Cuantas horas dedicas a redes sociales?"))
 act2 = float(input("Cuantas horas dedicas a video juegos?"))
