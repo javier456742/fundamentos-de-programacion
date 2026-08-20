@@ -13,7 +13,7 @@ d_prof=0
 d_may=0
 
 np = int(input("Cuantas personas son? "))
-i=1
+
 
 for i in range(1, np+1):
 
