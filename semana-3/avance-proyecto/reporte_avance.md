@@ -53,109 +53,109 @@
 
 ```text
 Algoritmo LasBrasasDeOaxaca
-    Definir total_dia, subtotal, total_pedido, precio, recargo Como Real
-    Definir opcion, cantidad, num_pedidos, numero_mesa Como Entero
-    Definir continuar_cliente, respuesta_promo Como Cadena
+    Inicio
+    Definir total_dia, subtotal, total_pedido, precio, recargo Como float
+    Definir opcion, cantidad, num_pedidos, numero_mesa Como int
+    Definir continuar_cliente, respuesta_promo Como string
     
     total_dia = 0
     num_pedidos = 0
     continuar_cliente = "si"
     
-    Mientras continuar_cliente = "si" O continuar_cliente = "Si" Hacer
-        Escribir "===================================="
-        Escribir "       TAQUERÍA LAS BRASAS DE OAXACA"
-        Escribir "===================================="
-        Escribir "Ingrese el número de mesa:"
-        Leer numero_mesa
+    Mientras(while) continuar_cliente = "si" O continuar_cliente = "Si" 
+        print "===================================="
+        print "       TAQUERÍA LAS BRASAS DE OAXACA"
+        print "===================================="
+        print "Ingrese el número de mesa:"
+        Capturar numero_mesa
         
         subtotal = 0
         opcion = 0
         
-        Mientras opcion <= 6 Hacer
-            Escribir ""
-            Escribir "--- MENÚ DE PLATILLOS ---"
-            Escribir "1. Orden Tacos al Pastor (3 pcs) - $60"
-            Escribir "2. Orden Quesadillas Oaxaqueñas (2 pcs) - $50"
-            Escribir "3. Alambre Especial de la Casa - $110"
-            Escribir "4. Agua Fresca (1 L) - $30"
-            Escribir "5. Refresco (600 ml) - $25"
-            Escribir "6. Finalizar pedido de la mesa"
-            Escribir "Seleccione una opción (1-6):"
-            Leer opcion
+        Mientras(while) opcion <= 6 
+            print ""
+            print "--- MENÚ DE PLATILLOS ---"
+            print "1. Orden Tacos al Pastor (3 pcs) - $60"
+            print "2. Orden Quesadillas Oaxaqueñas (2 pcs) - $50"
+            print "3. Alambre Especial de la Casa - $110"
+            print "4. Agua Fresca (1 L) - $30"
+            print "5. Refresco (600 ml) - $25"
+            print "6. Finalizar pedido de la mesa"
+            print "Seleccione una opción (1-6):"
+            Capturar opcion
             
-            Si opcion >= 1 Y opcion <= 5 Entonces
-                Escribir "Ingrese la cantidad solicitada:"
-                Leer cantidad
+            Si opcion >= 1 Y opcion <= 5 
+                print "Ingrese la cantidad solicitada:"
+                Capturar cantidad
                 
-                Si cantidad > 0 Entonces
+                Si cantidad > 0 
                     recargo = 0
                     
-                    Segun opcion Hacer
+                    Opcion(match case)
                         1:
                             precio = 60
                             // Regla de negocio: 1 taco suelto de orden de 3
-                            Si cantidad = 1 Entonces
-                                Escribir "¿El cliente desea solo 1 pieza individual en lugar de la orden completa? (s/n):"
-                                Leer respuesta_promo
-                                Si respuesta_promo = "s" O respuesta_promo = "S" Entonces
+                            Si cantidad = 1 
+                                print "¿El cliente desea solo 1 pieza individual en lugar de la orden completa? (s/n):"
+                                Capturar respuesta_promo
+                                Si respuesta_promo = "s" O respuesta_promo = "S" 
                                     precio = 25 // Precio base individual + $10 recargo
                                     recargo = 10
-                                FinSi
-                            FinSi
+                                fin del if
+                            fin del if
                         2:
                             precio = 50
                             // Regla de negocio: 1 quesadilla suelta de orden de 2
-                            Si cantidad = 1 Entonces
-                                Escribir "¿El cliente desea solo 1 pieza individual en lugar de la orden completa? (s/n):"
-                                Leer respuesta_promo
-                                Si respuesta_promo = "s" O respuesta_promo = "S" Entonces
+                            Si cantidad = 1 
+                                print "¿El cliente desea solo 1 pieza individual en lugar de la orden completa? (s/n):"
+                                Capturar respuesta_promo
+                                Si respuesta_promo = "s" O respuesta_promo = "S" 
                                     precio = 35 // Precio base individual + $10 recargo
                                     recargo = 10
-                                FinSi
-                            FinSi
+                                fin del if
+                            fin del if
                         3: precio = 110
                         4: precio = 30
                         5: precio = 25
-                    FinSegun
-                    
+                    fin opcion(match case)
+
                     subtotal = subtotal + (precio * cantidad)
-                    Si recargo > 0 Entonces
-                        Escribir "-> Se aplicó un recargo de $10.00 MXN por pedido individual."
-                    FinSi
-                    Escribir "-> Ítem agregado. Subtotal mesa: $", subtotal
+                    Si recargo > 0 
+                        print "-> Se aplicó un recargo de $10.00 MXN por pedido individual."
+                    fin del if
+                    print "-> Ítem agregado. Subtotal mesa: $", subtotal
                 Sino
-                    Escribir "¡ERROR! La cantidad debe ser mayor a 0."
-                FinSi
+                    print "La cantidad debe ser mayor a 0."
+                fin del if
             Sino
-                Si opcion > 6 Entonces
-                    Escribir "¡ERROR! Opción inválida."
-                FinSi
-            FinSi
-        FinMientras
-        
-        Si subtotal > 0 Entonces
+                Si opcion > 6 
+                    print "Opción inválida."
+                fin del if
+            fin del if
+        Fin del mientras(while)
+        Si subtotal > 0 
             total_pedido = subtotal
             total_dia = total_dia + total_pedido
             num_pedidos = num_pedidos + 1
             
-            Escribir ""
-            Escribir "===================================="
-            Escribir "RESUMEN DE CUENTA - MESA #", numero_mesa
-            Escribir "Total a Pagar: $", total_pedido
-            Escribir "===================================="
+            print ""
+            print "===================================="
+            print "RESUMEN DE CUENTA - MESA ", numero_mesa
+            print "Total a Pagar: ", total_pedido
+            print "===================================="
         Sino
-            Escribir "Pedido cancelado o sin ítems registrados."
-        FinSi
+            print "Pedido cancelado o sin ítems registrados."
+        fin del if
         
-        Escribir "¿Desea atender a otra mesa? (s/n):"
-        Leer continuar_cliente
-    FinMientras
-    
-    Escribir ""
-    Escribir "===================================="
-    Escribir "    CORTE DE CAJA / RESUMEN DEL DÍA"
-    Escribir "===================================="
-    Escribir "Total de mesas atendidas: ", num_pedidos
-    Escribir "Ventas totales de la jornada: $", total_dia
-    Escribir "===================================="
+        print "¿Desea atender a otra mesa? (s/n):"
+        Capturar continuar_cliente
+    Fin del mientras(while)
+    print ""
+    print "===================================="
+    print "    CORTE DE CAJA / RESUMEN DEL DÍA"
+    print "===================================="
+    print "Total de mesas atendidas: ", num_pedidos
+    print "Ventas totales de la jornada: $", total_dia
+    print "===================================="
+    fin
 FinAlgoritmo
