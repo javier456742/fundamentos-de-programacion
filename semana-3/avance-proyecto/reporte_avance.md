@@ -11,7 +11,7 @@
 * **Problemática:** Falta de un sistema digital centralizado de consola que organice la captura de comandas por mesa, aplique reglas de cobro ajustadas al menú y genere reportes automáticos del corte de caja diario.
 * **Reglas de Negocio:** 
 * **Menú Base:** El establecimiento ofrece productos típicos de taquería (tacos, quesadillas, alambres, aguas frescas, refrescos, etc.). 
-* **Ajuste por Pieza Individual (Recargo):** Cuando un cliente solicita únicamente 1 pieza de un producto cuyo precio promocional de menú requiere ordenar 2 o más piezas (ej. promociones 2x1 o paquetes de 3), se aplica un recargo automático de **+$10.00 MXN** al precio base unitario. 
+* **Ajuste por Pieza Individual (cargoextra):** Cuando un cliente solicita únicamente 1 pieza de un producto cuyo precio promocional de menú requiere ordenar 2 o más piezas (ej. promociones 2x1 o paquetes de 3), se aplica un cargoextra automático de **+$10.00 MXN** al precio base unitario. 
 * **Validación de Pedidos Cero:** No se permiten cuentas finales con valor igual o menor a `$0.00`. Toda cantidad ingresada debe ser mayor a 0.
 * **Atención Continua:** El sistema debe operar en un bucle continuo atendiendo mesa por mesa hasta que el operador decida cerrar la jornada de trabajo.
 
@@ -20,7 +20,7 @@
 
 **2.-** **Captura por Mesa:** Solicitar el número de mesa e iterar la adición de platillos/bebidas y cantidades hasta que la mesa concluya su pedido.
 
-**3.-** **Cálculo de Recargos:** Aplicar el ajuste de **+$10 MXN** cuando el pedido consista en 1 sola unidad de una orden múltiple (promocional). 
+**3.-** **Cálculo de cargoextras:** Aplicar el ajuste de **+$10 MXN** cuando el pedido consista en 1 sola unidad de una orden múltiple (promocional). 
 
 **4.-** **Acumulación e Informe Final** Sumar los subtotales de cada mesa, mostrar el ticket desglosado y emitir el resumen del total de mesas atendidas y venta global del día.
 
@@ -31,7 +31,7 @@
 
 `cantidad` = `int` Cantidad de porciones/unidades solicitadas.
 
-`es_unidad_promocional` = `bool` Bandera que indica si aplica el recargo de +$10 por unidad individual. 
+`es_unidad_promocional` = `bool` Bandera que indica si aplica el cargoextra de +$10 por unidad individual. 
 
 `subtotal` = `float` Suma acumulada de los productos solicitados por una mesa. 
 
@@ -40,7 +40,7 @@
 `seguir` = `bool` / `str` Variable de control para mantener activo el flujo de atención. 
 
 ## 5. Operadores del Lenguaje
-* **Operadores Matemáticos (`+`, `-`, `*`):** Utilizados para sumar el total, aplicar el recargo de +$10 a piezas individuales y multiplicar el precio.* 
+* **Operadores Matemáticos (`+`, `-`, `*`):** Utilizados para sumar el total, aplicar el cargoextra de +$10 a piezas individuales y multiplicar el precio.* 
 
 * **Operadores Relacionales (`==`, `>`, `!=`, `<=`, `>=`):** Empleados para opciones de menú, asegurar que la cantidad sea positiva (`cantidad > 0`) e identificar decisiones.* 
 
@@ -56,7 +56,7 @@
 ```text
 Algoritmo LasBrasasDeOaxaca
     Inicio
-    Definir total_dia, subtotal, total_pedido, precio, recargo Como float
+    Definir total_dia, subtotal, total_pedido, precio, cargoextra Como float
     Definir opcion, cantidad, num_pedidos, numero_mesa Como int
     Definir continuar_cliente, respuesta_promo Como string
     
@@ -91,29 +91,27 @@ Algoritmo LasBrasasDeOaxaca
                 Capturar cantidad
                 
                 Si cantidad > 0 
-                    recargo = 0
+                    cargoextra = 0
                     
                     Opcion(match case)
                         1:
                             precio = 60
-                            // Regla de negocio: 1 taco suelto de orden de 3
                             Si cantidad = 1 
                                 print "¿El cliente desea solo 1 pieza individual en lugar de la orden completa? (s/n):"
                                 Capturar respuesta_promo
                                 Si respuesta_promo = "s" O respuesta_promo = "S" 
-                                    precio = 25 // Precio base individual + $10 recargo
-                                    recargo = 10
+                                    precio = 25 
+                                    cargoextra = 10
                                 fin del if
                             fin del if
                         2:
                             precio = 50
-                            // Regla de negocio: 1 quesadilla suelta de orden de 2
                             Si cantidad = 1 
                                 print "¿El cliente desea solo 1 pieza individual en lugar de la orden completa? (s/n):"
                                 Capturar respuesta_promo
                                 Si respuesta_promo = "s" O respuesta_promo = "S" 
-                                    precio = 35 // Precio base individual + $10 recargo
-                                    recargo = 10
+                                    precio = 35 
+                                    cargoextra = 10
                                 fin del if
                             fin del if
                         3: precio = 110
@@ -122,8 +120,8 @@ Algoritmo LasBrasasDeOaxaca
                     fin opcion(match case)
 
                     subtotal = subtotal + (precio * cantidad)
-                    Si recargo > 0 
-                        print "-> Se aplicó un recargo de $10.00 MXN por pedido individual."
+                    Si cargoextra > 0 
+                        print "-> Se aplicó un cargoextra de $10.00 MXN por pedido individual."
                     fin del if
                     print "-> Ítem agregado. Subtotal mesa: $", subtotal
                 Sino
@@ -142,7 +140,7 @@ Algoritmo LasBrasasDeOaxaca
             
             print ""
             print "===================================="
-            print "RESUMEN DE CUENTA - MESA ", numero_mesa
+            print "RESUMEN DE CUENTA - MESA ", numero_mesa   
             print "Total a Pagar: ", total_pedido
             print "===================================="
         Sino
