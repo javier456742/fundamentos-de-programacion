@@ -1,8 +1,10 @@
-# Fundamentos de Programación — Avance de Proyecto
+# Fundamentos de Programación — Avance del Proyecto
 
 ## 1. Análisis Organizacional
-* **Empresa:** Taquería *Las Brasas de Oaxaca*.
+**Empresa:** Taquería *Las Brasas de Oaxaca*.
+
 **Área de Impacto Operativo:** Gestión de inventarios, registro de ventas en mostrador/mesas y eficiencia en el tiempo de atención.* 
+
 **Necesidad:** Actualmente, el establecimiento registra los pedidos manualmente en notas de papel y realiza el cálculo de las ventas diarias utilizando una calculadora al finalizar la jornada. Esto genera: errores, poca eficiencia, problemas de rapidez, etc.
 
 ## 2. Definición del Problema
@@ -75,8 +77,8 @@ Algoritmo LasBrasasDeOaxaca
         Mientras(while) opcion <= 6 
             print ""
             print "--- MENÚ DE PLATILLOS ---"
-            print "1. Orden Tacos al Pastor (3 pcs) - $60"
-            print "2. Orden Quesadillas Oaxaqueñas (2 pcs) - $50"
+            print "1. Orden Tacos al Pastor (3 pzs) - $60"
+            print "2. Orden Quesadillas Oaxaqueñas (2 pzs) - $50"
             print "3. Alambre Especial de la Casa - $110"
             print "4. Agua Fresca (1 L) - $30"
             print "5. Refresco (600 ml) - $25"
