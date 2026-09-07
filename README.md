@@ -10,5 +10,5 @@ Los archivos hasta el momento son:
 4. Ejercicios extra valuables semana 2 
 5. Reporte-avancce del proyecto 
 6. diagrama de flujo
-7. Actividad semana 4
+7. Actividad 3
 8. Ejercicios extras semana 4
