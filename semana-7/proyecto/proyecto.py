@@ -2,26 +2,33 @@ import time
 
 def pantalla_carga():
     
+    # Muestra una animación simple de carga al iniciar el programa.
+    
     print("\n[SISTEMA] Iniciando programa...")
-
+    
     for segundo in range(1, 6):
-        print(f"Cargando entorno... {segundo}/5 segundos")
+        print(f"Cargando... {segundo}/5 segundos")
         time.sleep(1)
     print("Sistema cargado con éxito\n")
 
 def gestionar_usuarios():
     
+    # Gestiona el registro e inicio de sesión guardando usuarios y contraseñas en archivos separados
+
     archivo_usuarios = "usuarios.txt"
+    archivo_contras = "contras.txt"
     
     try:
-        with open(archivo_usuarios, "r") as f:
-            usuarios_registrados = f.read().splitlines()
+        with open(archivo_usuarios, "r") as f_u, open(archivo_contras, "r") as f_c:
+            usuarios_registrados = f_u.read().splitlines()
+            usuarios_contras = f_c.read().splitlines()
     except FileNotFoundError:  
-        with open(archivo_usuarios, "w") as f:
+        with open(archivo_usuarios, "w") as f_u, open(archivo_contras, "w") as f_c:
             usuarios_registrados = []
+            usuarios_contras = []
 
     print("="*40)
-    print("  ACCESO DE USUARIOS  ")
+    print("    ACCESO DE USUARIOS    ")
     print("="*40)
     print("1. Iniciar sesion")
     print("2. Registrar nueva cuenta")
@@ -29,29 +36,32 @@ def gestionar_usuarios():
     opcion = input("Seleccione una opción (1 o 2): ")
 
     if opcion == "1":
-        
+
         usuario = input("Ingrese su nombre de usuario: ")
+        contra = input("Ingrese su contraseña de usuario: ")
 
         if usuario in usuarios_registrados:
-            print(f"\nBienvenido de nuevo, {usuario}.")
-            return usuario
+            indice = usuarios_registrados.index(usuario)
+            if usuarios_contras[indice] == contra:
+                print(f"\nBienvenido de nuevo, {usuario}.")
+                return usuario
 
-        else:
-            print("\nEl usuario no esta registrado. Intente de nuevo o registrese.")
-            return gestionar_usuarios()
+        print("\nEl usuario no esta registrado o la contraseña es incorrecta. Intente de nuevo o registrese.")
+        return gestionar_usuarios()
             
     elif opcion == "2":
 
         nuevo_usuario = input("Elija un nombre de usuario nuevo: ")
+        nueva_contra = input("Elija una contraseña de usuario nueva: ")
 
         if nuevo_usuario in usuarios_registrados:
             print("\nEse usuario ya existe. Intente iniciar sesión.")
             return gestionar_usuarios()
-
+        
         else:
-
-            with open(archivo_usuarios, "a") as f:
-                f.write(nuevo_usuario + "\n")
+            with open(archivo_usuarios, "a") as f_u, open(archivo_contras, "a") as f_c:
+                f_u.write(nuevo_usuario + "\n")
+                f_c.write(nueva_contra + "\n")
             print(f"\nCuenta creada y guardada con exito, bienvenido, {nuevo_usuario}.")
             return nuevo_usuario
 
@@ -60,29 +70,57 @@ def gestionar_usuarios():
         return gestionar_usuarios()
 
 def capturar_fecha():
-
+    
+    # Captura y devuelve una tupla con la fecha de operación ingresada por el usuario.
+    
     print("\n--- CAPTURA DE FECHA DE OPERACIÓN ---")
-
+    
     dia = input("Ingrese el día (ej. 12): ")
     mes = input("Ingrese el mes (ej. 06): ")
     anio = input("Ingrese el año (ej. 2026): ")
+    
     Fecha = (dia, mes, anio)
-
+    
     print(f"Fecha registrada: {Fecha[0]}/{Fecha[1]}/{Fecha[2]}")
-
+    
     return Fecha
 
-def taqueria_pedidos(fecha_actual):
+def registrar_en_indice(nombre_archivo):
+    
+    #Registra el nombre del archivo en 'registro_ventas.txt' asignándole un número único si no existe ya.
 
+    archivo_indice = "registro_ventas.txt"
+    archivos_existentes = []
+    
+    # Leer el índice actual si existe
+    
+    try:
+        with open(archivo_indice, "r") as f:
+            archivos_existentes = f.read().splitlines()
+    except FileNotFoundError:
+        pass
+        
+    # Verificar si el archivo ya está registrado (para no duplicarlo)
+    
+    if nombre_archivo not in archivos_existentes:
+        archivos_existentes.append(nombre_archivo)
+        # Reescribir todo el índice con la numeración actualizada
+        with open(archivo_indice, "w") as f:
+            for i, nombre in enumerate(archivos_existentes, start=1):
+                f.write(f"{i}-{nombre}\n")
+
+def taqueria_pedidos(fecha_actual):
+    
+    # Controla el registro de pedidos por mesa y calcula el total de ventas del día.
+    
     total_dia = 0
     num_pedidos = 0
     continuar_cliente = "si"
     
     while continuar_cliente.lower() == "si":
-
-        print("====================================")
-        print("     TAQUERÍA LAS BRASAS DE OAXACA  ")
-        print("====================================")
+        print("===================================")
+        print("   TAQUERÍA LAS BRASAS DE OAXACA   ")
+        print("===================================")
         
         try:
             numero_mesa = int(input("Ingrese el número de mesa: "))
@@ -161,8 +199,14 @@ def taqueria_pedidos(fecha_actual):
             
             nombre_archivo = f"ventas_{fecha_actual[0]}_{fecha_actual[1]}_{fecha_actual[2]}.txt"
 
+            # Guarda el ticket de venta en un archivo de texto diario
+
             with open(nombre_archivo, "a") as archivo:
                 archivo.write(f"Fecha: {fecha_actual[0]}/{fecha_actual[1]}/{fecha_actual[2]} | Mesa: {numero_mesa} | Total: ${total_pedido}\n")
+
+            # Registra y enumera automáticamente el archivo creado
+
+            registrar_en_indice(nombre_archivo)
 
             print(f"-> Venta guardada en '{nombre_archivo}'.")
             
@@ -174,22 +218,57 @@ def taqueria_pedidos(fecha_actual):
     print(f"\n--- CORTE DEL DÍA ---\nMesas atendidas: {num_pedidos} | Ventas totales: ${total_dia}")
 
 def leer_archivo_texto():
+
+    # Lee y muestra en consola el contenido de un archivo de ventas buscando por su número asignado.
     
     print("\n--- LECTURA DE ARCHIVOS DE VENTAS ---")
-
-    archivo_nombre = input("Ingrese el nombre del archivo .txt a leer (ej. ventas_12_06_2026.txt): ")
+    archivo_indice = "registro_ventas.txt"
 
     try:
-        with open(archivo_nombre, "r") as archivo:
-            print(f"\n--- Contenido de {archivo_nombre} ---")
-            print(archivo.read())
-            print("---------------------------------------")
-
+        with open(archivo_indice, "r") as f:
+            lineas = f.read().splitlines()
     except FileNotFoundError:
-        print(f"El archivo '{archivo_nombre}' no existe.")
+        print("No hay registros de ventas guardados todavía.")
+        return
+
+    if not lineas:
+        print("El archivo de registro está vacío.")
+        return
+
+    print("\nDías de ventas registrados:")
+    for linea in lineas:
+        print(linea) # Muestra ej: 1-ventas_24_09_26.txt
+
+    try:
+        num_seleccionado = int(input("\nIngrese el número asignado al día de venta que desea ver: "))
+    except ValueError:
+        print("Debe ingresar un número válido.")
+        return
+
+    # Buscar el archivo correspondiente al número ingresado
+
+    archivo_a_buscar = None
+    for linea in lineas:
+        partes = linea.split("-", 1) # Separa el número del nombre del archivo
+        if len(partes) == 2 and partes[0].strip() == str(num_seleccionado):
+            archivo_a_buscar = partes[1].strip()
+            break
+
+    if archivo_a_buscar:
+        try:
+            with open(archivo_a_buscar, "r") as archivo:
+                print(f"\n--- Contenido de {archivo_a_buscar} ---")
+                print(archivo.read())
+                print("---------------------------------------")
+        except FileNotFoundError:
+            print(f"El archivo '{archivo_a_buscar}' no se encuentra en el sistema.")
+    else:
+        print("Número asignado no válido.")
+
+# Ejecución inicial de usuario y entorno
 
 usuario = gestionar_usuarios()
-    
+
 print(f"\nHola, {usuario}")
 
 pantalla_carga()
@@ -199,15 +278,14 @@ fecha_actual = capturar_fecha()
 menu_matriz = [
     [1, "Iniciar Módulo de Pedidos"],
     [2, "Leer Archivo de Ventas (.txt)"],
-    [3, "Cambiar Fecha de Operación"],
-    [4, "Salir"]
+    [3, "Salir"]
 ]
     
 activo = True
 
 while activo:
     print("="*40)
-    print("           MENÚ PRINCIPAL           ")
+    print("            MENÚ PRINCIPAL          ")
     print("="*40)
     for fila in menu_matriz:
         print(f"[{fila[0]}] {fila[1]}")
@@ -224,8 +302,6 @@ while activo:
     elif opcion == 2:
         leer_archivo_texto()
     elif opcion == 3:
-        fecha_actual = capturar_fecha()
-    elif opcion == 4:
         print(f"Hasta luego, {usuario}")
         activo = False
     else:
