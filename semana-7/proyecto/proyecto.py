@@ -1,5 +1,37 @@
 import time
 
+# Define el tiempo de espera para preguntar si seguir
+
+TIEMPO_MAXIMO_INACTIVIDAD = 10 *  600 
+
+
+def verificar_inactividad_con_for(ultima_actividad):
+
+    # Si pasan 10 min sin haccer algo pregunta si continuar
+
+    if time.time() - ultima_actividad < TIEMPO_MAXIMO_INACTIVIDAD:
+        return ultima_actividad
+
+    print("\nAlerta: Se han detectado 10 minutos de inactividad.")
+    for intento in range(1, 4):
+        respuesta = (
+            input('¿Deseas continuar en la sesión? Escribe "si" o "no": ')
+            .strip()
+            .lower()
+        )
+        if respuesta == "si":
+            print("Reanudando sesión...")
+            return time.time()
+        if respuesta == "no":
+            print("Regresando al inicio de sesión...")
+            return "reiniciar"
+        print(
+            f'Intento {intento}/3. Respuesta no válida. Debe escribir "sí" o "no".'
+        )
+
+    print("Demasiados intentos fallidos. Cerrando sesión.")
+    return "reiniciar"
+
 def pantalla_carga():
     
     # Muestra una animación simple de carga al iniciar el programa.
@@ -22,13 +54,13 @@ def gestionar_usuarios():
         with open(archivo_usuarios, "r") as f_u, open(archivo_contras, "r") as f_c:
             usuarios_registrados = f_u.read().splitlines()
             usuarios_contras = f_c.read().splitlines()
-    except FileNotFoundError:  
+    except FileNotFoundError: 
         with open(archivo_usuarios, "w") as f_u, open(archivo_contras, "w") as f_c:
             usuarios_registrados = []
             usuarios_contras = []
 
     print("="*40)
-    print("    ACCESO DE USUARIOS    ")
+    print(" ACCESO DE USUARIOS ")
     print("="*40)
     print("1. Iniciar sesion")
     print("2. Registrar nueva cuenta")
@@ -265,7 +297,7 @@ def leer_archivo_texto():
     else:
         print("Número asignado no válido.")
 
-# Ejecución inicial de usuario y entorno
+# Ejecución inicial
 
 usuario = gestionar_usuarios()
 
@@ -282,10 +314,19 @@ menu_matriz = [
 ]
     
 activo = True
+ultima_actividad = time.time()
 
 while activo:
+    res = verificar_inactividad_con_for(ultima_actividad)
+    if res == "reiniciar":
+        usuario = gestionar_usuarios()
+        ultima_actividad = time.time()
+        continue
+    else:
+        ultima_actividad = res
+
     print("="*40)
-    print("            MENÚ PRINCIPAL          ")
+    print(" MENÚ PRINCIPAL ")
     print("="*40)
     for fila in menu_matriz:
         print(f"[{fila[0]}] {fila[1]}")
@@ -293,16 +334,21 @@ while activo:
         
     try:
         opcion = int(input("Seleccione una opción: "))
+        ultima_actividad = time.time()
     except ValueError:
         print("Ingrese un número válido.")
+        ultima_actividad = time.time()
         continue
             
     if opcion == 1:
         taqueria_pedidos(fecha_actual)
+        ultima_actividad = time.time()
     elif opcion == 2:
         leer_archivo_texto()
+        ultima_actividad = time.time()
     elif opcion == 3:
         print(f"Hasta luego, {usuario}")
         activo = False
     else:
         print("Opción fuera de rango.")
+        
